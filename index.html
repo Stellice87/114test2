@@ -3,32 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>GA4 教學示範網站</title>
-  <!-- 將下面的 G-XXXXXXXXXX 換成你的 GA4 追蹤碼 -->
- 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-V14KKZX84H"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-V14KKZX84H');
-</script>
-   <style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V14KKZX84H"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V14KKZX84H');
+  </script>
+
+  <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f5f5f5;
+      padding: 20px;
+      background-color: #f9f9f9;
     }
 
     .slider-container {
-      width: 300px;
-      margin: auto;
+      margin-top: 30px;
+      background: #fff;
       padding: 20px;
-      background-color: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 10px;
-      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      width: 300px;
     }
 
     input[type="range"] {
@@ -36,46 +34,69 @@
     }
 
     .value-display {
-      margin-top: 15px;
-      font-size: 20px;
-      color: #333;
+      margin-top: 10px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
+
   <h1>歡迎來到 GA4 示範網站</h1>
   <p>這裡是教學用網站，支援 GA4 數據追蹤。</p>
+
+  <!-- 表單 -->
   <form id="myForm">
     <label>名字：<input name="name" /></label>
     <button type="submit">提交</button>
   </form>
+
+  <!-- 按鈕 -->
   <button id="testButton">按我一下</button>
 
+  <!-- 音量拉桿 -->
+  <div class="slider-container">
+    <label for="volumeSlider">設定音量：</label>
+    <input type="range" id="volumeSlider" min="0" max="100" value="50" />
+    <div class="value-display">目前音量：<span id="volumeValue">50</span>%</div>
+  </div>
+
+  <!-- 模擬音訊元素（實際開發中可控制 audio 元件） -->
+  <audio id="sampleAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" controls></audio>
+
   <script>
+    // 表單追蹤
     document.getElementById('myForm').addEventListener('submit', function(e){
       e.preventDefault();
       gtag('event', 'form_submit', {form_id: 'myForm'});
       alert('GA4 表單提交事件已發送');
     });
 
+    // 按鈕追蹤
     document.getElementById('testButton').addEventListener('click', function(){
       gtag('event', 'button_click', {button_id: 'testButton'});
       alert('GA4 按鈕點擊事件已發送');
     });
-  </script>
-  <div class="slider-container">
-    <h2>調整數值</h2>
-    <input type="range" id="slider" min="0" max="100" value="50">
-    <div class="value-display">目前數值：<span id="slider-value">50</span></div>
-  </div>
 
-  <script>
-    const slider = document.getElementById("slider");
-    const output = document.getElementById("slider-value");
+    // 音量拉桿控制
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    const audio = document.getElementById('sampleAudio');
 
-    slider.oninput = function () {
-      output.textContent = this.value;
-    }
+    volumeSlider.addEventListener('input', function () {
+      const vol = this.value;
+      volumeValue.textContent = vol;
+      audio.volume = vol / 100;  // 設定音量
+    });
+
+    volumeSlider.addEventListener('change', function () {
+      const vol = this.value;
+      gtag('event', 'volume_change', {
+        control_id: 'volumeSlider',
+        volume_level: vol
+      });
+      alert('GA4 音量變更事件已發送：' + vol);
+    });
   </script>
+
 </body>
 </html>
